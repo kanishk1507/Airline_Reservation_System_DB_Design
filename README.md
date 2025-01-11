@@ -1,6 +1,8 @@
 # Airlines Database Design 
-## Airlines Reservation System 
+### For Airlines Reservation System 
 ## By : Kanishk Acharya 
+
+### Tool & Tech: SQL, SQL Server (SSMS 20)
 
 This is a Database design for an Airlines Company with 10,000 hours of **flights**. It has the highest capacity **aircraft**, all equipped with modern technology stuffs ensuring quality and safety of passengers.
 
