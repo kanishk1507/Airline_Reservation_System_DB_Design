@@ -80,10 +80,12 @@ This database contains 14 tables that are unique and referenced to each other as
 
 This database also contains some Cursors, Triggers and a stored procedure that serve different purposes which are described below:  
 **-Cursors:** 
+
 (i) To calculate and update available seats:  
 This cursor iterates through flights and calculate the number of available seats based on the aircraft capacity and booked seats. 
 
 **-Triggers:**  
+
 (i) Auto-calculate Net Fare: 
 Automatically calculates the net fare whenever a new fare is inserted into the ‘AirFare’ table. 
 
@@ -93,3 +95,7 @@ To notify users about updated flight timings (delays or early departure) and dis
 (i) Notification Table: To store notifications that can be queried by the application to send messages to users.  
 (ii) Triggers: Flight schedule change and new discount notification triggers on discounts and flight_schedule tables.  
 (iii) Procedure: ‘Send Notification’  procedure and ‘Notification Cursor’
+
+
+# Query: 
+For SQL Query and database please look through the .txt file and other attached files.
