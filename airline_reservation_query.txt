@@ -1,0 +1,159 @@
+create database flight_booking_system;
+use flight_booking_system;
+
+create table AirCrafts(AcID int primary key, AcNum varchar(30) not null ,Capacity int not null, MfdBy varchar(120) not null, MfdOn datetime not null );
+
+create table Route(RtID int primary key, Airport varchar(30) not null, Destination varchar(32) not null, RouteCode varchar(16) not null unique);
+
+create table AirFare( AfID int primary key, Route int Foreign key(Route) references Route(RtID), Fare money not null,FSC money);
+
+create table flight_schedule(FlID int primary key, FlightDate datetime, Departure datetime, Arrival datetime, AirCraft int foreign key(AirCraft) references AirCrafts(AcID), NetFare int foreign key(NetFare) references AirFare(AfID)); 
+
+create table Discounts(DiID int primary key, title varchar(32), Amount int, Description varchar(255)); 
+
+create table charges(ChID int primary key, Title varchar(32), Amount int, Description varchar(255));
+
+create table Country(CtID int primary key, CountryName varchar(32) not null);
+
+create table state(StID int primary key, StateName varchar(32), Country int foreign key(Country) references Country(CtID));
+
+create table Contact_details(CnID int primary key, Email varchar(16) not null, Cell varchar(16) not null, Tel varchar(16), Street varchar(64), State int not null foreign key(State) references State(StID)); 
+create table passengers(PsID int primary key, Name varchar(32) not null, Address varchar(64) not null, Age int not null, Nationality varchar(16) not null, Contact int not null foreign key(contact) references Contact_details(CnID));
+
+create table Branches(BrID int primary key,Center varchar(16) not null, Address varchar(32)not null, StateID int foreign key(StateID) references state(StID));
+
+create table employee(EmpID int primary key, Name varchar(32) not null, Address varchar(32) not null, Branch int not null foreign key(Branch) references Branches(BrID), Designation varchar(32) not null, Email varchar(16) not null,Tel varchar(16) not null,Ext int);
+
+create table Transactions(TsID int primary key, BookingDate datetime , DepartureDate datetime, Passenger int foreign key references Passengers(PsID), Flight int foreign key references Flight_Schedule(FlID), Type bit, Employee int foreign key references Employee(EmpID), Charges int foreign key references Charges(ChID), Discount int foreign key references Discounts(DiID));
+
+INSERT INTO AirCrafts (AcID, AcNum, Capacity, MfdBy, MfdOn) VALUES(1, 'AC123', 180, 'Boeing', '2018-05-20'),(2, 'AC456', 220, 'Airbus', '2019-03-15'),(3, 'AC789', 150, 'Bombardier', '2020-07-10');
+
+INSERT INTO Route (RtID, Airport, Destination, RouteCode) VALUES(1, 'JFK', 'LAX', 'JFK-LAX'),(2, 'ORD', 'SFO', 'ORD-SFO'),(3, 'ATL', 'MIA', 'ATL-MIA');
+
+INSERT INTO AirFare (AfID, Route, Fare, FSC) VALUES(1, 1, 300.00, 20.00),(2, 2, 400.00, 25.00),(3, 3, 250.00, 15.00);
+
+INSERT INTO Flight_Schedule (FlID, FlightDate, Departure, Arrival, AirCraft, NetFare) VALUES(1, '2023-11-15', '2023-11-15 08:00:00', '2023-11-15 11:00:00', 1, 1),(2, '2023-12-01', '2023-12-01 09:00:00', '2023-12-01 12:00:00', 2, 2),(3, '2024-01-10', '2024-01-10 10:00:00', '2024-01-10 13:00:00', 3, 3);
+
+INSERT INTO Discounts (DiID, Title, Amount, Description) VALUES(1, 'New Year Discount', 50, 'Discount for New Year flights'),(2, 'Student Discount', 30, 'Discount for students'),(3, 'Senior Citizen Discount', 40, 'Discount for senior citizens');
+
+INSERT INTO Charges (ChID, Title, Amount, Description) VALUES(1, 'Service Charge', 10, 'Service charge for booking'),(2, 'Baggage Charge', 20, 'Charge for extra baggage'),(3, 'Cancellation Charge', 50, 'Charge for flight cancellation');
+
+INSERT INTO Country (CtID, CountryName) VALUES(1, 'United States'),(2, 'Canada'),(3, 'Mexico');
+
+INSERT INTO State (StID, StateName, Country) VALUES(1, 'New York', 1),(2, 'California', 1),(3, 'Ontario', 2);
+
+ALTER TABLE Contact_details ALTER COLUMN Email varchar(100) NOT NULL;
+INSERT INTO Contact_Details (CnID, Email, Cell, Tel, Street, State) VALUES(1, 'john.doe@example.com', '123-456-7890', '123-555-7890', '123 Elm St', 1),(2, 'jane.smith@example.com', '234-567-8901', '234-555-8901', '456 Maple Ave', 2),(3, 'alex.jones@example.com', '345-678-9012', '345-555-9012', '789 Oak Blvd', 3);
+
+INSERT INTO Passengers (PsID, Name, Address, Age, Nationality, Contact) VALUES(1, 'John Doe', '123 Elm St', 30, 'American', 1),(2, 'Jane Smith', '456 Maple Ave', 25, 'Canadian', 2),(3, 'Alex Jones', '789 Oak Blvd', 45, 'Mexican', 3);
+
+INSERT INTO Branches (BrID,Center,Address,State) VALUES(1, 'NYC Center', '100 Main St', 1),(2, 'LA Center', '200 Main St', 2),(3, 'Toronto Center', '300 Main St', 3);
+
+INSERT INTO Employee (EmpID, Name, Address, Branch, Designation, Email, Tel, Ext) VALUES(1, 'Alice Johnson', '100 Elm St', 1, 'Manager', 'alice.johnson@example.com', '100-555-1234', 101),(2, 'Bob Williams', '200 Maple St', 2, 'Supervisor', 'bob.williams@example.com', '200-555-5678', 102),(3, 'Charlie Brown', '300 Oak St', 3, 'Agent', 'charlie.brown@example.com', '300-555-9101', 103);
+ALTER TABLE Employee ALTER COLUMN Email varchar(100) NOT NULL;
+
+INSERT INTO Transactions (TsID, BookingDate, DepartureDate, Passenger, Flight, Type, Employee, Charges, Discount) VALUES(1, '2023-11-01', '2023-11-15', 1, 1, 1, 1, 1, 1),(2, '2023-11-20', '2023-12-01', 2, 2, 0, 2, 2, 2),(3, '2023-12-25', '2024-01-10', 3, 3, 1, 3, 3, 3);
+
+ALTER TABLE flight_schedule ADD AvailableSeats INT;
+
+--cursor
+--TO CALCULATE AND UPDATE AVAILABLE SEATS: 
+DECLARE @FlID INT, @AcID INT, @BookedSeats INT, @Capacity INT;
+DECLARE FlightCursor CURSOR FOR
+SELECT FlID, AirCraft FROM flight_schedule;
+OPEN FlightCursor;
+FETCH NEXT FROM FlightCursor INTO @FlID, @AcID;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    SET @BookedSeats = (SELECT COUNT(*) FROM Transactions WHERE Flight = @FlID);
+    SET @Capacity = (SELECT Capacity FROM AirCrafts WHERE AcID = @AcID);
+    UPDATE flight_schedule SET AvailableSeats = @Capacity - @BookedSeats WHERE FlID = @FlID;
+    FETCH NEXT FROM FlightCursor INTO @FlID, @AcID;
+END;
+CLOSE FlightCursor;
+DEALLOCATE FlightCursor;
+--TESTING THIS CURSOR :
+INSERT INTO Transactions (TsID, BookingDate, DepartureDate, Passenger, Flight, Type, Employee, Charges, Discount)VALUES(4, '2023-12-01', '2023-12-15', 1, 1, 1, 1, 1, 1),(5, '2023-12-02', '2023-12-16', 2, 1, 1, 1, 1, 1),(6, '2023-12-03', '2023-12-17', 3, 2, 1, 2, 2, 2);
+SELECT * FROM flight_schedule;
+
+--IMPLEMENTING TRIGGERS: 
+--Trigger to auto-calculate Net Fare
+ALTER TABLE AirFare ADD NetFare MONEY;
+CREATE TRIGGER trg_AutoCalculateNetFare ON AirFare
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    DECLARE @AfID INT, @Fare MONEY, @FSC MONEY, @NetFare MONEY;
+    SELECT @AfID = AfID, @Fare = Fare, @FSC = FSC FROM inserted;
+    SET @NetFare = @Fare + @FSC;
+    UPDATE AirFare SET NetFare = @NetFare WHERE AfID = @AfID;
+END;
+--Testing this trigger:
+INSERT INTO AirFare (AfID, Route, Fare, FSC) VALUES (4, 1, 350.00, 25.00);
+SELECT * FROM AirFare WHERE AfID = 4;
+
+--STORED PROCEDURE TO NOTIFY PASSENGERS: --------------------------------------------
+CREATE TABLE Notifications (NotID INT PRIMARY KEY IDENTITY,PsID INT FOREIGN KEY REFERENCES Passengers(PsID),NotificationType VARCHAR(50),Message VARCHAR(255),CreatedAt DATETIME DEFAULT GETDATE(),Sent BIT DEFAULT 0);
+
+--About schedule updates:
+CREATE TRIGGER trg_NotifyFlightScheduleChange
+ON flight_schedule
+AFTER UPDATE
+AS
+BEGIN
+    DECLARE @FlID INT, @Departure DATETIME, @Arrival DATETIME, @Message VARCHAR(255);
+    SELECT @FlID = FlID, @Departure = Departure, @Arrival = Arrival FROM inserted;
+    SET @Message = 'Flight ' + CAST(@FlID AS VARCHAR) + ' has been rescheduled. New Departure: ' + CAST(@Departure AS VARCHAR) + ', New Arrival: ' + CAST(@Arrival AS VARCHAR);
+    INSERT INTO Notifications (PsID, NotificationType, Message)
+    SELECT DISTINCT Transactions.Passenger, 'Flight Schedule Change', @Message
+    FROM Transactions
+    WHERE Transactions.Flight = @FlID;
+END;
+----------testing:
+UPDATE flight_schedule SET Departure = '2023-12-20 10:00:00' WHERE FlID = 1;
+SELECT * FROM Notifications;
+
+--About discount offers:
+CREATE TRIGGER trg_NotifyNewDiscount
+ON Discounts
+AFTER INSERT
+AS
+BEGIN
+    DECLARE @DiID INT, @Title VARCHAR(32), @Amount INT, @Description VARCHAR(255), @Message VARCHAR(255);
+    SELECT @DiID = DiID, @Title = Title, @Amount = Amount, @Description = Description FROM inserted;
+    SET @Message = 'New Discount Offer: ' + @Title + '. ' + @Description + '. Amount: ' + CAST(@Amount AS VARCHAR);
+        INSERT INTO Notifications (PsID, NotificationType, Message)
+    SELECT PsID, 'Discount Offer', @Message FROM Passengers;
+END;
+----------testing:
+INSERT INTO Discounts (DiID, Title, Amount, Description)VALUES (4, 'Holiday Discount', 50, 'Special discount for the holiday season');
+SELECT * FROM Notifications;
+--stored procedure for sending notifications :
+CREATE PROCEDURE SendNotifications
+AS
+BEGIN
+    DECLARE @PsID INT, @Message VARCHAR(255), @Email VARCHAR(100);
+    DECLARE NotificationCursor CURSOR FOR
+    SELECT N.PsID, N.Message, C.Email
+    FROM Notifications N
+    JOIN Passengers P ON N.PsID = P.PsID
+    JOIN Contact_details C ON P.Contact = C.CnID
+    WHERE N.Sent = 0;
+    OPEN NotificationCursor;
+    FETCH NEXT FROM NotificationCursor INTO @PsID, @Message, @Email;
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Replace with actual email sending logic
+        PRINT 'Sending email to: ' + @Email;
+        PRINT 'Message: ' + @Message;
+        -- Update the notification status to sent
+        UPDATE Notifications SET Sent = 1 WHERE PsID = @PsID AND Message = @Message;
+        FETCH NEXT FROM NotificationCursor INTO @PsID, @Message, @Email;
+    END;
+    CLOSE NotificationCursor;
+    DEALLOCATE NotificationCursor;
+END;
+
+--Executing the stored procedure:
+EXEC SendNotifications;
+SELECT * FROM Notifications;
